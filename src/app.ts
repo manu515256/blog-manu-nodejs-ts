@@ -8,7 +8,7 @@ import db from './database/db'
 
 const app:Application = express();
 
-db.authenticate().then(()=>{console.log('Database running')}).catch((e:any)=>{console.log(e)})
+db.authenticate().then(()=>{console.log('Database running')}).catch((e:any)=>{console.log(e)});
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -16,7 +16,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-app.use('/api/v2', router)
+app.use('/api/v2', router);
 
 
 

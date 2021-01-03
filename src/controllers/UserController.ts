@@ -1,7 +1,7 @@
 import {Request,Response,NextFunction} from 'express';
-import models from '../models'
-import bcrypt from 'bcryptjs'
-import token from '../services/token'
+import models from '../models';
+import bcrypt from 'bcryptjs';
+import token from '../services/token';
 
 export default{
     add: async (req:Request,res:Response,next:NextFunction) => {
@@ -16,5 +16,27 @@ export default{
             next();
         }
     },
+    login: async (req:Request,res:Response,next:NextFunction) =>{
+        try {
+
+            let user = await models.User.findOne({where:{username:req.body.username}});
+
+            if(user){
+                let match = await bcrypt.compare(req.body.password, user.dataValues.password);
+
+                if(match){
+                    let getToken = await token.encode(user.id);
+                    res.status(200).json({'token':getToken, user});
+                }else{
+                    res.status(401).send("wrong password");
+                }
+            }else{
+                res.status(404).send("wrong username");
+            }
+        }catch(e){
+            res.status(500).send("An error ocurred");
+            next(e);
+        }
+    }
 
 }
